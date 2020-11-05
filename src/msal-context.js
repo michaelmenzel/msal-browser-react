@@ -11,12 +11,13 @@ const isEdge = msedge > 0;
 export const MsalContext = React.createContext();
 export const useMsal = () => useContext(MsalContext);
 export const MsalProvider = ({
-    children,
-    config
-}) => {
+                                 children,
+                                 config
+                             }) => {
     const [isAuthenticated, setIsAuthenticated] = useState();
     const [user, setUser] = useState();
     const [token, setToken] = useState();
+    const [idToken, setIdToken] = useState();
     const [publicClient, setPublicClient] = useState();
     const [loading, setLoading] = useState(false);
     const [popupOpen, setPopupOpen] = useState(false);
@@ -27,25 +28,36 @@ export const MsalProvider = ({
         const pc = new msal.PublicClientApplication(config);
         setPublicClient(pc);
 
-        pc.handleRedirectPromise().then((response) => 
+        const updateUserFromPublicClient = (pc) => {
+            const accounts = pc.getAllAccounts();
+            if (accounts.length > 0) {
+                setUser(accounts[0]);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        pc.handleRedirectPromise().then((response) =>
         {
             setLoading(false);
             if (response) {
-                setUser(pc.getAccount());
+                updateUserFromPublicClient(pc);
                 setIsAuthenticated(true);
                 if(response.accessToken) {
-                  setToken(response.accessToken);
+                    setToken(response.accessToken);
+                    setIdToken(response.idToken);
                 }
-            } 
+            }
         }).catch(error => {
             console.log(error);
             setLoginError(error);
         });
 
-        if (pc.getAccount()) {
-            setUser(pc.getAccount());
+        if(updateUserFromPublicClient(pc)) {
             setIsAuthenticated(true);
         }
+
         // eslint-disable-next-line
     }, []);
 
@@ -85,7 +97,7 @@ export const MsalProvider = ({
         } catch (error) {
             try {
                 setPopupOpen(true);
-                
+
                 const response = await publicClient.acquireTokenPopup(loginRequest);
 
                 setToken(response.accessToken);
@@ -100,19 +112,18 @@ export const MsalProvider = ({
         }
     }
 
-    // This function can be removed if you do not need to support IE
     const getTokenRedirect = async (loginRequest) => {
         try {
             setToken(await publicClient.acquireTokenSilent(loginRequest));
         }
         catch(error) {
-               
+
             try{
                 setLoading(true);
-                
+
                 publicClient.acquireTokenRedirect(loginRequest);
             }
-            catch(error) { 
+            catch(error) {
                 console.log(error);
                 setLoginError(error);
             }
@@ -135,6 +146,7 @@ export const MsalProvider = ({
                 isAuthenticated,
                 user,
                 token,
+                idToken,
                 loading,
                 popupOpen,
                 loginError,
