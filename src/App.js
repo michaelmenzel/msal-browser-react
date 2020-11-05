@@ -2,8 +2,8 @@ import React from 'react';
 import './App.css';
 import Welcome from "./Welcome";
 
-import { useMsal } from "./msal-context";
-import { loginRequest } from "./auth-config";
+import { useMsal } from "./auth/msal-context";
+import { loginRequest } from "./auth/auth-config";
 
 function App() {
   const { loading, isAuthenticated, login } = useMsal();

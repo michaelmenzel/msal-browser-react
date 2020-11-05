@@ -1,6 +1,6 @@
 import React from "react";
-import { useMsal } from "./msal-context";
-import { apiRequest } from "./auth-config";
+import { useMsal } from "./auth/msal-context";
+import { apiRequest } from "./auth/auth-config";
 
 const Welcome = () => {
   const { user, logout, getToken, token, loginError } = useMsal();

@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './assets/index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { MsalProvider } from "./msal-context";
-import { msalConfig, loginRequest } from "./auth-config";
+import { MsalProvider } from "./auth/msal-context";
+import { msalConfig, loginRequest } from "./auth/auth-config";
 
 ReactDOM.render(
   <MsalProvider
