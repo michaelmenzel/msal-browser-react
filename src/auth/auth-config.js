@@ -18,6 +18,6 @@ export const loginRequest = {
 
 // Add here scopes for id token to be used at MS Identity Platform endpoints.
 export const apiRequest = {
-    scopes: ["API-SCOPE"],
+    scopes: ["User.Read"],
     forceRefresh: false // Set this to "true" to skip a cached token and go to the server to get a new token
 };
