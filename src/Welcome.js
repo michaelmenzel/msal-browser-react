@@ -3,14 +3,14 @@ import { useMsal } from "./auth/msal-context";
 import { apiRequest } from "./auth/auth-config";
 
 const Welcome = () => {
-  const { user, logout, getToken, token, loginError } = useMsal();
+  const { user, logout, getAccessToken, accessToken, loginError } = useMsal();
 
   return (
     <div>
       <h1>Welcome {user.userName}</h1>
-      {token && (<span>Your token is {token}</span>)}
+      {accessToken && (<span>Your token is {accessToken}</span>)}
       <br></br>
-      <button onClick={() => getToken(apiRequest, "loginPopup")}>Get Token</button>
+      <button onClick={() => getAccessToken(apiRequest, "loginPopup")}>Get Token</button>
       <br></br>
       <button onClick={() => logout()}>Log out</button>
       <br></br>

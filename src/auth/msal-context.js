@@ -16,7 +16,7 @@ export const MsalProvider = ({
                              }) => {
     const [isAuthenticated, setIsAuthenticated] = useState();
     const [user, setUser] = useState();
-    const [token, setToken] = useState();
+    const [accessToken, setAccessToken] = useState();
     const [idToken, setIdToken] = useState();
     const [publicClient, setPublicClient] = useState();
     const [loading, setLoading] = useState(false);
@@ -45,7 +45,7 @@ export const MsalProvider = ({
                 updateUserFromPublicClient(pc);
                 setIsAuthenticated(true);
                 if(response.accessToken) {
-                    setToken(response.accessToken);
+                    setAccessToken(response.accessToken);
                     setIdToken(response.idToken);
                 }
             }
@@ -90,17 +90,17 @@ export const MsalProvider = ({
         publicClient.logout();
     }
 
-    const getTokenPopup = async (loginRequest) => {
+    const getAccessTokenPopup = async (loginRequest) => {
         try {
             const response = await publicClient.acquireTokenSilent(loginRequest);
-            setToken(response.accessToken);
+            setAccessToken(response.accessToken);
         } catch (error) {
             try {
                 setPopupOpen(true);
 
                 const response = await publicClient.acquireTokenPopup(loginRequest);
 
-                setToken(response.accessToken);
+                setAccessToken(response.accessToken);
             }
             catch (error) {
                 console.log(error);
@@ -112,9 +112,9 @@ export const MsalProvider = ({
         }
     }
 
-    const getTokenRedirect = async (loginRequest) => {
+    const getAccessTokenRedirect = async (loginRequest) => {
         try {
-            setToken(await publicClient.acquireTokenSilent(loginRequest));
+            setAccessToken(await publicClient.acquireTokenSilent(loginRequest));
         }
         catch(error) {
 
@@ -130,13 +130,13 @@ export const MsalProvider = ({
         }
     }
 
-    const getToken = async (loginRequest, method) => {
+    const getAccessToken = async (loginRequest, method) => {
         const signInType = (isIE || isEdge)? "loginRedirect" : method;
         if(signInType === "loginRedirect") {
-            return await getTokenRedirect(loginRequest);
+            return await getAccessTokenRedirect(loginRequest);
         } else
         {
-            return await getTokenPopup(loginRequest);
+            return await getAccessTokenPopup(loginRequest);
         }
     }
 
@@ -145,14 +145,14 @@ export const MsalProvider = ({
             value={{
                 isAuthenticated,
                 user,
-                token,
+                accessToken,
                 idToken,
                 loading,
                 popupOpen,
                 loginError,
                 login,
                 logout,
-                getToken
+                getAccessToken
             }}
         >
             {children}
